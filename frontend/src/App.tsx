@@ -8,7 +8,7 @@ import EditPostPage from './pages/EditPostPage'
 import MyPostsPage from './pages/MyPostsPage'
 
 function AppContent() {
-  const { user, loading, loginError, showButton, buttonRef } = useUser()
+  const { user, loading, loginError, buttonRef } = useUser()
 
   if (loading) {
     return (

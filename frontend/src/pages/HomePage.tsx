@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react'
 import { api } from '../api/client'
 import type { Category, HomeData } from '../api/types'
 import PostCard from '../components/PostCard'
-import { useUser } from '../context/UserContext'
 
 export default function HomePage() {
-  const { user } = useUser()
+
   const [home, setHome] = useState<HomeData | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategory, setSelectedCategory] = useState('')
