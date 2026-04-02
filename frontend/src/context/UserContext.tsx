@@ -20,6 +20,9 @@ const UserContext = createContext<UserContextValue>({
   buttonRef: { current: null },
 })
 
+const SKIP_AUTH = import.meta.env.VITE_SKIP_AUTH === 'true'
+const DEV_EMAIL = import.meta.env.VITE_DEV_EMAIL as string
+
 let gsiInitialized = false
 
 export function UserProvider({ children }: { children: ReactNode }) {
@@ -47,6 +50,13 @@ export function UserProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
+    if (SKIP_AUTH) {
+      setUserEmail(DEV_EMAIL)
+      setUser({ email: DEV_EMAIL, name: DEV_EMAIL.split('@')[0], isAdmin: true, domain: 'orangeapple.co' })
+      setLoading(false)
+      return
+    }
+
     if (gsiInitialized) return
     gsiInitialized = true
 

@@ -10,22 +10,24 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [posts, setPosts] = useState<ReturnType<typeof api.getPosts> extends Promise<infer T> ? T : never>()
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   function loadHome() {
-    return api.getHome().then(setHome)
+    return api.getHome().then(setHome).catch(e => setError(e.message))
   }
 
   useEffect(() => {
-    Promise.all([loadHome(), api.getCategories().then(setCategories)])
+    Promise.all([loadHome(), api.getCategories().then(setCategories).catch(e => setError(e.message))])
       .finally(() => setLoading(false))
   }, [])
 
   useEffect(() => {
     api.getPosts({ categoryKey: selectedCategory || undefined, sort: 'latest', pageSize: 30 })
-      .then(setPosts)
+      .then(setPosts).catch(e => setError(e.message))
   }, [selectedCategory])
 
   if (loading) return <div className="text-center py-20 text-gray-400">載入中…</div>
+  if (error) return <div className="text-center py-20 text-red-400 text-sm">API 錯誤：{error}</div>
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
