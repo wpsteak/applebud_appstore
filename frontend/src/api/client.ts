@@ -6,12 +6,8 @@ let _email = ''
 export function setUserEmail(email: string) { _email = email }
 
 async function get<T>(action: string, params: Record<string, string> = {}): Promise<T> {
-  const url = new URL(GAS_URL)
-  url.searchParams.set('action', action)
-  if (_email) url.searchParams.set('email', _email)
-  Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v))
-
-  const res = await fetch(url.toString())
+  const qs = new URLSearchParams({ action, ...(_email ? { email: _email } : {}), ...params })
+  const res = await fetch(`${GAS_URL}?${qs.toString()}`)
   const json: ApiResponse<T> = await res.json()
   if (!json.success || json.data === null) throw new Error(json.error?.message ?? 'Unknown error')
   return json.data
